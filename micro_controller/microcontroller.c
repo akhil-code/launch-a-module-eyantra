@@ -128,19 +128,18 @@ void write_char(unsigned char c)
 {
 	s_portc(rs,1); //sets the rs pin, LCD is set in data mode
 	// feeding upper nibble of argument data to upper nibble of the LCD
-	PORTC &=0x0f;// clearing the upper nibble of LCD using bitwise and operations
-	PORTC|= c&0xf0;// feeding upper nibble of argument data to upper nibble of the LCD
-	s_portc(en,1);// puts logic high on enable pin of LCD
+	PORTC &= 0x0f;// clearing the upper nibble of LCD using bitwise and operations
+	PORTC |= c & 0xf0;// feeding upper nibble of argument data to upper nibble of the LCD
+	s_portc(en, 1);// puts logic high on enable pin of LCD
 	_delay_ms(2);
-	s_portc(en,0);// puts logic low on enable pin of LCD completing high to low pulse
+	s_portc(en, 0);// puts logic low on enable pin of LCD completing high to low pulse
 	_delay_ms(2);
 	// feeding lower nibble of argument data to upper nibble of the LCD
 	PORTC &=0x0f; // clearing the upper nibble of LCD using bitwise and operations
-	PORTC |=(c<<4)&0xf0;// feeding lower nibble of argument data to upper nibble of the LCD after shifting right by four bits
-	s_portc(en,1);// puts logic high on enable pin of LCD
+	PORTC |= (c << 4) & 0xf0;// feeding lower nibble of argument data to upper nibble of the LCD after shifting right by four bits
+	s_portc(en, 1);// puts logic high on enable pin of LCD
 	_delay_ms(2);
-	s_portc(en,0);// puts logic low on enable pin of LCD completing high to low pulse
-	
+	s_portc(en, 0);// puts logic low on enable pin of LCD completing high to low pulse
 }
 
 /*
@@ -152,7 +151,7 @@ void write_char(unsigned char c)
 */
 void lcd_init()
 {   
-	DDRC|=0xf7;// LCD is initialized by setting LCD related pins as outputs 
+	DDRC |= 0xf7;// LCD is initialized by setting LCD related pins as outputs 
 	// LCD is initialized in 4-bit mode
 	write_cmd(0x33);
 	write_cmd(0x32);
@@ -161,7 +160,7 @@ void lcd_init()
 	write_cmd(0x01);// command to clear the LCD display
 	write_cmd(0x0E);// command to turn on LCD display with no cursor 
 	write_cmd(0x80);// command to position the cursor at first row first column
-	s_portc(rw,0);// LCD set to write mode
+	s_portc(rw, 0);// LCD set to write mode
 }
 
 /*
@@ -173,12 +172,12 @@ void lcd_init()
 *
 */
 
-void lcd_cursor(int x,int y)
+void lcd_cursor(int x, int y)
 {   // x=0 for row1 and x=1 for row2
-	if(x==0)
-	write_cmd(0x80+y);// increments the value by y for moving to the respective column of row1
+	if(x == 0)
+	write_cmd(0x80 + y);// increments the value by y for moving to the respective column of row1
 	else
-	write_cmd(0xc0+y);// increments the value by y for moving to the respective column of row2
+	write_cmd(0xc0 + y);// increments the value by y for moving to the respective column of row2
 }
 
 /*
@@ -192,7 +191,7 @@ void lcd_cursor(int x,int y)
 */
 void write_string(char arr[])
 {
-	for (int i=0;arr[i]!='\0';i++)
+	for(int i = 0 ; arr[i] != '\0' ; i++)
 	{
 		write_char(arr[i]);// a character on LCD 
 	}
@@ -210,14 +209,14 @@ void write_string(char arr[])
 *
 */
 
-void write_val(int x,int y,int a)
+void write_val(int x, int y, int a)
 {
-	lcd_cursor(x,y);// positioning the cursor on LCD
-	write_char(a/100 + 48);// separating the digit in hundreds place and converting 
+	lcd_cursor(x, y);// positioning the cursor on LCD
+	write_char(a / 100 + 48);// separating the digit in hundreds place and converting 
 	                       // it to respective character and then printing it on LCD
-	write_char( 10*(a/100.0-a/100)+48);// separating the digit in tens place and converting 
+	write_char(10 * (a / 100.0 - a / 100) + 48);// separating the digit in tens place and converting 
 	                                   // it to respective character and then printing it on LCD
-	write_char(10*(a/10.0-a/10 )+48);// separating the digit in ones place and converting 
+	write_char(10 * (a / 10.0 - a / 10 ) + 48);// separating the digit in ones place and converting 
 	                                 // it to respective character and then printing it on LCD
 }
 
@@ -247,8 +246,8 @@ void servo_init()
     TCCR1A = 0xAB; /*{COM1A1=1, COM1A0=0; COM1B1=1, COM1B0=0; COM1C1=1 COM1C0=0}
  					For Overriding normal port functionality to OCRnA outputs.
 				  {WGM11=1, WGM10=1} Along With WGM12 in TCCR1B for Selecting FAST PWM Mode*/
- TCCR1C = 0x00;
- TCCR1B = 0x0C; //WGM12=1; CS12=1, CS11=0, CS10=0 (Prescaler=256)
+ 	TCCR1C = 0x00;
+ 	TCCR1B = 0x0C; //WGM12=1; CS12=1, CS11=0, CS10=0 (Prescaler=256)
 	
 }
 
@@ -281,7 +280,7 @@ void servo1(unsigned char deg)
 void servo2(unsigned char deg)
 {
 	float servoPosition = 0;
-	servoPosition = ((float)deg/ 1.86) + 35.0;//angle required is mapped to the range 0 to 255
+	servoPosition = ((float)deg / 1.86) + 35.0; //angle required is mapped to the range 0 to 255
 	OCR1BH = 0x00;
 	OCR1BL = (unsigned char) servoPosition;//mapped value is assigned to output compare register
 }
@@ -607,15 +606,16 @@ void forward_mm(unsigned int DistanceInMM)
 		
 		else if(error < 0)
 		{
-			velocity(255,255);//_delay_ms(10);
+			velocity(255, 255);//_delay_ms(10);
 		}
 		else if(error > 0)
 		{    //rv stores the speed value of the right motor after correcting error
-			unsigned char rv = 255-(error*kpr);// kpr is an error correction factor for right motor
-			velocity(255,rv);//_delay_ms(10);
-		}
+			unsigned char rv = 255 - (error * kpr); // kpr is an error correction factor for right motor
+			velocity(255,rv); 						//_delay_ms(10);
+		}		
 		
-	}stop(); //Stop robot
+	}
+	stop(); //Stop robot
 }
 
 /*
@@ -630,7 +630,7 @@ void angle_rotate(unsigned int Degrees)
 	float ReqdShaftCount = 0;
 	unsigned long int ReqdShaftCountInt = 0;
 
-	ReqdShaftCount = (float) Degrees/ 4.090; // division by resolution to get shaft count
+	ReqdShaftCount = (float) Degrees / 4.090; // division by resolution to get shaft count
 	ReqdShaftCountInt = (unsigned int)ReqdShaftCount;
 	right_encoder_count = 0;
 	left_encoder_count = 0;
@@ -684,7 +684,7 @@ void angle_left(unsigned int Degrees)
 {
 	// 176 pulses for 360 degrees rotation 2.045 degrees per count
 	left(); //Turn soft left
-	Degrees=Degrees*2;
+	Degrees *= 2;
 	angle_rotate(Degrees);
 }
 
@@ -700,7 +700,7 @@ void angle_right(unsigned int Degrees)
 {
 	// 176 pulses for 360 degrees rotation 2.045 degrees per count
 	right();  //Turn soft right
-	Degrees=Degrees*2;
+	Degrees =* 2;
 	angle_rotate(Degrees);
 }
 
@@ -731,7 +731,8 @@ void uart0_init()
 * Example Call:  init_devices();
 */
 void init_devices()// initializes all the devices
-{ cli();
+{ 
+  cli();
   uart0_init();
   buzzer_init();
   lcd_init();
@@ -746,8 +747,7 @@ void init_devices()// initializes all the devices
 
 ISR(USART0_RX_vect) 		// ISR for receive complete interrupt
 {
-	
-	data = UDR0; // stores the data in the received buffer into variable data
+	data = UDR0;  	// stores the data in the received buffer into variable data
 	if(data == 'C') //turns the buzzer off
 	{
 		buzzer_off();return;
@@ -765,12 +765,12 @@ ISR(USART0_RX_vect) 		// ISR for receive complete interrupt
 		servo2(5);
 		_delay_ms(2);return;
 	}
-	else if (data=='x')  // lowers down the arm
+	else if(data=='x')  // lowers down the arm
 	{
 		servo1(155);
 		_delay_ms(5);return;
 	}
-	else if (data=='i') // lifts the arm up
+	else if(data=='i') // lifts the arm up
 	{
 		servo1(30);
 		_delay_ms(5);return;
@@ -809,13 +809,13 @@ ISR(USART0_RX_vect) 		// ISR for receive complete interrupt
 		return;
 	}
     
-	else if(data== '>')// stops storing the received values into array a and further manipulation of received data is started
+	else if(data== '>') // stops storing the received values into array a and further manipulation of received data is started
 	{
 		sei();
 		k--;
 		unsigned int b[3];
-		int j=0;
-		while(k>0){
+		int j = 0;
+		while(k  >0){
 			// a[] stores the received angle or distance values until '>' is received .
 			// so their order is reversed and converted to integer digits before storing them in b[]
 			b[j] = a[k] - 48; //converts the numerical characters received into integers
@@ -824,8 +824,8 @@ ISR(USART0_RX_vect) 		// ISR for receive complete interrupt
 		}
 		j--;
 		unsigned int calc_value = 0;
-		while(j>=0){
-			calc_value = calc_value + b[j]*pow(10,j);// the three individual integer elements or digits 
+		while(j >= 0){
+			calc_value = calc_value + b[j] * pow(10, j);// the three individual integer elements or digits 
 			                                       //in the array b are combined to form a three digit number
 			j--;
 		}
@@ -844,38 +844,40 @@ ISR(USART0_RX_vect) 		// ISR for receive complete interrupt
 		else if(a[0] == 'q')  //when 'q' is received, the data stored in calc_value is taken as angle for turning left
 		{
 			angle_left(calc_value);
-			k=0;
+			k = 0;
 			return;
 		}
 		else if(a[0] == 'w')  //when 'w' is received, the data stored in calc_value is taken as angle for turning right
 		{
 			angle_right(calc_value);
-			k=0;
+			k = 0;
 			return;
 		}
 		else if(a[0] == 'd') // takes the received value as distance to move forward
 		{
 			forward_mm(calc_value);
-			k=0;
+			k = 0;
 			return;
 		}
 	}
-	else if(k>0)
+	else if(k > 0)
 	{
-		a[k++]=data;
+		a[k++] = data;
 		return ;
 	}
 	else if(data == '8')  //when received robot moves forward and calib_flag is set and the error correction turns on  
 	{
 		forward();
-		right_encoder_count =0; left_encoder_count=0;
+		right_encoder_count = 0;
+		left_encoder_count = 0;
 		calib_flag = 1;
 		return;
 	}
 	else if(data == '2')  //when received robot moves backward and calib_flag is cleared and the error correction turns off
 	{
 		back();
-		right_encoder_count =0; left_encoder_count=0;
+		right_encoder_count = 0;
+		left_encoder_count = 0;
 		calib_flag = 0;
 		return;
 	}
@@ -939,10 +941,10 @@ ISR(USART0_RX_vect) 		// ISR for receive complete interrupt
 int main(void)
 {    
 	init_devices();// initializing the robot's peripherals
-	lcd_cursor(1,6); // positions the cursor on LCD
+	lcd_cursor(1, 6); // positions the cursor on LCD
 	write_string("LM-448");// prints the string "LM-448" on LCD
 	//initial velocity of the motors is set as maximum
-	velocity(255,255);
+	velocity(255, 255);
 	//initially the arm is lifted up and grip is opened
 	servo1(30);
 	servo2(180);
@@ -956,13 +958,13 @@ int main(void)
 			int error = right_encoder_count - left_encoder_count ;
 			if(error < 0)
 			{
-				velocity(255,255);
+				velocity(255, 255);
 				_delay_ms(5);
 			}
 			else if(error > 0)
 			{   //rv stores the speed value of the right motor after correcting error
-				unsigned char rv = 255 -(error*kpr);// kpr is an error correction factor for right motor
-				velocity(255,rv);
+				unsigned char rv = 255 - (error * kpr);// kpr is an error correction factor for right motor
+				velocity(255, rv);
 				_delay_ms(5);
 			}
 		}
