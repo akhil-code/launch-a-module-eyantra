@@ -13,16 +13,14 @@ import math
 
 
 '''
-* Finds the angle with respect to the x axis using arctan() formula
 * Function Name: angleof
 * Input: point,center
 * Output: angle made with horizontal axis
 * Logic:angle = arctan(y2-y1/x2-x1)
 * Example Call: angleof((60,80),(0,0))
 '''
-
-
 def angleof(point, center):
+    """ Finds the angle with respect to the x axis using arctan() formula """
     if center[0] == point[0] and point[1] > center[1]:
         slope = 99999
         angle = math.atan(slope)
@@ -64,16 +62,14 @@ def angleof(point, center):
 
 
 '''
-* Finds the angle between two lines as the difference in angle made by them w.r.t x-axis
 * Function name: angle_between
 * Input: point1, point2, center
 * Output: angle between the two points along the center
 * Logic: angle = angle1(with horizontal axis) - angle2(with horizontal axis)
 * Example Call: angle_between((70,110),(50,80),(0,0))
 '''
-
-
 def angle_between(source_point, dest_point, common_point):
+    """ Finds the angle between two lines as the difference in angle made by them w.r.t x-axis """
     angle1 = angleof(source_point, common_point)
     angle2 = angleof(dest_point, common_point)
     angle = angle2 - angle1
@@ -84,4 +80,3 @@ def angle_between(source_point, dest_point, common_point):
         elif angle > 0:
             angle = -(360 - angle)
     return angle
-

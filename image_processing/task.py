@@ -46,7 +46,7 @@ def getxy(pos, img):
     if c == 0:
         c = 9
         r = pos / 9
-    else:    
+    else:
         r = (pos / 9) + 1
     
     # finds the starting and ending pixels
@@ -512,13 +512,13 @@ def find_critical_pts_mod(route):
 # checks whether there is a robot to the left or right of the robot
 # and rotates in the direction opposite to the side of obstacle
 def dir_rotate(curr_pos, bf, bc, angle):
-    print 'curr_pos' + str(curr_pos)
+    print('curr_pos' + str(curr_pos))
     neigh = algo_mod.get_neighbours(curr_pos)
     missing = None
     left = right = -1
     
     angle_hor = angle_module.angleof(bf, bc)
-    print 'angle_hor: ' + str(angle_hor) +' curr_pos: ' + str(curr_pos)
+    print('angle_hor: ' + str(angle_hor) +' curr_pos: ' + str(curr_pos))
     if abs(angle_hor) <= 45:
         #horizontal right
         left, right = curr_pos -9, curr_pos + 9
@@ -532,19 +532,19 @@ def dir_rotate(curr_pos, bf, bc, angle):
         #vertically up
         left, right = curr_pos - 1, curr_pos + 1
 
-    print 'left' + str(left) + 'right' + str(right)
+    print('left' + str(left) + 'right' + str(right))
     if angle > 0:
         try:
             if right < 1 or right > 54 or right % 9 == 1:
                 pass
             else:
                 neigh.index(right)              #checks if the space to right is free
-            print 'ACTUAL ROTATE: ' + str(angle)
+            print('ACTUAL ROTATE: ' + str(angle))
             rotate(angle)
             return
         except ValueError:
             angle -= 360
-            print 'ACTUAL ROTATE: ' + str(angle)
+            print('ACTUAL ROTATE: ' + str(angle))
             rotate(angle)
             cv2.waitKey(500)
             return
@@ -556,11 +556,11 @@ def dir_rotate(curr_pos, bf, bc, angle):
             else:
                 neigh.index(left)               #checks if he space to the left is free
             rotate(angle)
-            print 'ACTUAL ROTATE: ' + str(angle)
+            print('ACTUAL ROTATE: ' + str(angle))
             return
         except ValueError:
             angle = angle + 360
-            print 'ACTUAL ROTATE: ' + str(angle)
+            print('ACTUAL ROTATE: ' + str(angle))
             rotate(angle)
             cv2.waitKey(500)
             return  
@@ -596,7 +596,7 @@ matches = []
 
 # contains the color values(hsv-color space) of red,green,blue colors
 values = []
-values = [(120,109,76),(180,255,255),(30,93,29),(113,255,129),(30,66,80),(113,211,255)] # night 9
+values = [(120, 109, 76), (180, 255, 255), (30, 93, 29), (113, 255, 129), (30, 66, 80), (113, 211, 255)] # night 9
 
 
 
@@ -669,7 +669,7 @@ for pos in range(1, 55):
     img_temp = np.zeros(roi_img.shape, np.uint8)
 
     for no in range(len(contours)):
-        # print cv2.contourArea(contours[no])
+        # print(cv2.contourArea(contours[no]))
         if cv2.contourArea(contours[no]) < 60:
             continue
 
@@ -697,25 +697,25 @@ for pos in range(1, 55):
             # finding the ratio of areas
             area_ratio = cv2.contourArea(contours[no]) / cv2.contourArea(box)
         except ZeroDivisionError:
-            print 'error: zero division: '+ str(pos)
+            print('error: zero division: '+ str(pos))
 
         # Applying contour area ratio to identify the shapes
         if cv2.contourArea(contours[no]) > contour_areas[pos]:
             # rectangle
             if area_ratio > 0.85:
-                print str(pos) + ':rectangle\t' + 'area ratio:' + str(area_ratio) + '\tcontour area: ' + str(cv2.contourArea(contours[no]))
+                print(str(pos) + ':rectangle\t' + 'area ratio:' + str(area_ratio) + '\tcontour area: ' + str(cv2.contourArea(contours[no])))
                 shapes[pos] = 2
                 contour_areas[pos] = cv2.contourArea(contours[no])
                 centroids[pos] = (cx, cy)
             # circle
             elif area_ratio > 0.65 and area_ratio <= 0.85:
-                print str(pos)+':circle\t' + 'area ratio:' + str(area_ratio) + '\tcontour area: ' + str(cv2.contourArea(contours[no]))
+                print(str(pos)+':circle\t' + 'area ratio:' + str(area_ratio) + '\tcontour area: ' + str(cv2.contourArea(contours[no])))
                 shapes[pos] = 1
                 contour_areas[pos] = cv2.contourArea(contours[no])
                 centroids[pos] = (cx, cy)
             # triangle
             elif area_ratio <= 0.65 and area_ratio > 0.30:
-                print str(pos) + ':triangle\t' + 'area ratio:'+str(area_ratio) + '\tcontour area: ' + str(cv2.contourArea(contours[no]))
+                print(str(pos) + ':triangle\t' + 'area ratio:'+str(area_ratio) + '\tcontour area: ' + str(cv2.contourArea(contours[no])))
                 shapes[pos] = 3
                 contour_areas[pos] = cv2.contourArea(contours[no])
                 centroids[pos] = (cx, cy)
@@ -730,8 +730,8 @@ img = cv2.cvtColor(blur_img, cv2.COLOR_BGR2HSV)
 # red:0, green:1, blue:2
 for x in range(3):
 
-    print values[2 * x]
-    print values[(2 * x) + 1]
+    print(values[2 * x])
+    print(values[(2 * x) + 1])
 
     # color filtering
     mask = cv2.inRange(img, values[2 * x], values[(2 * x) + 1])
@@ -748,7 +748,7 @@ for x in range(3):
     img_temp = np.ones((480, 640), np.uint8)        #empty image to display the result
 
     for no in range(len(contours)):
-        # print cv2.contourArea(contours[no])
+        # print(cv2.contourArea(contours[no]))
         # if cv2.contourArea(contours[no])<10:
         #    continue
         
@@ -776,7 +776,7 @@ for x in range(3):
             if shapes[position] != -1:
                 colors[position] = x
         except:
-            print 'error at: ' + str(position)
+            print('error at: ' + str(position))
 
     cv2.imshow('contours'+str(x), img_temp)
 
@@ -784,16 +784,16 @@ for x in range(3):
 # prints the details of the objects that have been detected
 for x in range(55):
     if shapes[x] != -1:
-        print 'pos:' + str(x) + '  Shape:'+str(shapes[x]) + '  Area:'+str(contour_areas[x]) + '  Centroid:' + str(centroids[x])+'  Colors:  '+str(colors[x])
+        print('pos:' + str(x) + '  Shape:'+str(shapes[x]) + '  Area:'+str(contour_areas[x]) + '  Centroid:' + str(centroids[x])+'  Colors:  '+str(colors[x]))
 
 # matching the results
-print '\nMATCHES'
+print('\nMATCHES')
 for x in (1, 10, 19, 28, 37, 46):#make the values -1
     for y in range(1, 55):
         ctr = getxy(y, src_img_color)
         cv2.putText(src_img_color, str(y), (ctr[0], ctr[1]), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 0.5, (255, 255, 255), 2)
         if x != y and shapes[x] != -1 and colors[x]!=-1 and shapes[x] == shapes[y] and colors[x] == colors[y] and matches_work_area[y] < 0:
-            if y % 9 != 1 and abs(contour_areas[y] - contour_areas[x]) < 60):
+            if y % 9 != 1 and abs(contour_areas[y] - contour_areas[x]) < 60:
                 # matches.append((y, x))
                 # if the doorway object has one match in working area
                 if matches[(x / 9) + 1] == -1:
@@ -807,11 +807,11 @@ for x in (1, 10, 19, 28, 37, 46):#make the values -1
                     diff_new = (match_shape[0] - match_new[0]) * (match_shape[0] - match_new[0]) + (match_shape[1] - match_new[1]) * (match_shape[1] - match_new[1])
                     diff_old = (match_shape[0] - match_old[0]) * (match_shape[0] - match_old[0]) + (match_shape[1] - match_old[1]) * (match_shape[1] - match_old[1])
                     
-                    print 'diff_new: ' + str(diff_new) + '\tdiff_old: ' + str(diff_old)
+                    print('diff_new: ' + str(diff_new) + '\tdiff_old: ' + str(diff_old))
                     if diff_new < diff_old:
                         matches[(x / 9) + 1] = y
 
-                print str((y, x))
+                print(str((y, x)))
     matches_work_area[matches[(x / 9) + 1]] = 1
 
 
@@ -840,11 +840,11 @@ for x in range(len(match_pairs) - 1):
             d2 = (p2_x[0] - p1_y[0]) * (p2_x[0] - p1_y[0]) + (p2_x[1] - p1_y[1]) * (p2_x[1] - p1_y[1])
 
             sum_comb_swap = d1 + d2
-            print 'sum_comb: ' + str(sum_comb)
-            print 'sum_comb_swap: ' + str(sum_comb_swap)
+            print('sum_comb: ' + str(sum_comb))
+            print('sum_comb_swap: ' + str(sum_comb_swap))
             if sum_comb_swap <= sum_comb:
                 temp_match = match_pairs[y][0]
-                print temp_match
+                print(temp_match)
                 match_pairs[y][0] = match_pairs[x][0]
                 match_pairs[x][0] = temp_match
 
@@ -862,11 +862,11 @@ for pos in range(1, 55):
                 sorted_match_pairs.append(obj)
 
 match_pairs = sorted_match_pairs
-print 'match pairs ' + str(match_pairs)
+print('match pairs ' + str(match_pairs))
 cv2.imshow('matches', src_img_color)
 
 # Asking the user to continue further if the matches are correct
-print 'DO YOU WANT TO CONTINUE'
+print('DO YOU WANT TO CONTINUE')
 
 # if(cv2.waitKey(0) & 0xFF == ord('q')):
 #    cv2.imwrite('img.jpg',img_sv)
@@ -907,7 +907,7 @@ obstacles = []
 for x in range(1, 55):
     if shapes[x] != -1:
         obstacles.append(x)
-print 'obstacles: ' + str(obstacles)
+print('obstacles: ' + str(obstacles))
 
 # next_pos_trav: stores the position where the bot currently is present
 next_pos_trav = 23
@@ -943,15 +943,15 @@ for obj in match_pairs:
             #finding the route between current position and source
             route_planned = algo_mod.find_route(next_pos_trav, obj[0], 1, 1)
             route_planned = find_critical_pts_mod(route_planned)
-            print 'routing between ' + str(next_pos_trav) + ' ,' + str(obj[0])
-            print 'routed: ' + str(route_planned)
+            print('routing between ' + str(next_pos_trav) + ' ,' + str(obj[0]))
+            print('routed: ' + str(route_planned))
         else:
             #finding the route between object to the corresponding doorway shape
-            print 'routing between ' + str(obj[0]) + ' ,' + str(obj[1])
+            print('routing between ' + str(obj[0]) + ' ,' + str(obj[1]))
             route_planned = algo_mod.find_route(obj[0], obj[1], 1, 1)
-            print 'raw_route ' + str(route_planned)
+            print('raw_route ' + str(route_planned))
             route_planned = find_critical_pts_mod(route_planned)
-            print 'routed: ' + str(route_planned)
+            print('routed: ' + str(route_planned))
         
         # captures the image from camera while looping for few seconds
         z = no_of_frames
@@ -996,9 +996,9 @@ for obj in match_pairs:
 
             # replaces the coordinates of the block with the coordinates of the shape or object if the destination to be reached is an object or doorway shape
             if route_planned[index] == obj[0]:
-                print 'dest ' + str(dest) + ' ,centroids ' + str(centroids[obj[0]])
+                print('dest ' + str(dest) + ' ,centroids ' + str(centroids[obj[0]]))
                 dest = centroids[obj[0]]
-                print 'after dest '+str(dest) + ' ,centroids ' + str(centroids[obj[0]])
+                print('after dest '+str(dest) + ' ,centroids ' + str(centroids[obj[0]]))
             elif(route_planned[index] == obj[1]):
                 dest = centroids[obj[1]]
 
@@ -1028,7 +1028,7 @@ for obj in match_pairs:
                     mid_bot[1] = int((bc[1] + bf[1]) / 2)
                     mid_bot = (mid_bot[0], mid_bot[1])
                     curr_pos = getPositionFromCoord(findBlockColor(mid_bot, capz))
-                    print 'curr_pos' + str(curr_pos)
+                    print('curr_pos' + str(curr_pos))
                 except:
                     move_backward(500)
                     cv2.waitKey(1000)
@@ -1040,11 +1040,11 @@ for obj in match_pairs:
                 # finds angle and distance
                 angle = angle_module.angle_between(bf, dest, bc)
                 distance = (dest[0] - mid_bot[0]) * (dest[0] - mid_bot[0]) + (dest[1] - mid_bot[1]) * (dest[1] - mid_bot[1])
-                print 'bot: ' + str(angle) + " , " + str(distance)
+                print('bot: ' + str(angle) + " , " + str(distance))
                 
                 # if the distance is far away and angle is greater than the threshold
                 if abs(angle) > thresh_ang and distance > thresh_dis_near:
-                    print '\t\t\t\t ROTATE: ' + str(angle)
+                    print('\t\t\t\t ROTATE: ' + str(angle))
                     atBorder = False
                     if(curr_pos >= 1 and curr_pos <=9) or (curr_pos % 9 == 0) or (curr_pos >= 46 and curr_pos <= 54):
                         atBorder = True
@@ -1074,7 +1074,7 @@ for obj in match_pairs:
                     
                 # if the bot reached the destination adjust the angle and break the loop i.e to the next object
                 elif distance < thresh_dis_near:
-                    print 'REACHED INNER REGION'
+                    print('REACHED INNER REGION')
                     if abs(angle) > thresh_ang:
                         if soft_flag == 1:
                             soft_rotate(angle)
@@ -1101,7 +1101,7 @@ for obj in match_pairs:
                         cv2.waitKey(2100)
                         # moves backward a bit after deposition of the object in doorway
                         move_backward(250)
-                        print 'set free loc ' + str(obj[0])
+                        print('set free loc ' + str(obj[0]))
                         # sets the location of object free
                         algo_mod.set_free_loc(obj[0])
                         algo_mod.set_free_loc(next_pos_trav)
@@ -1111,10 +1111,10 @@ for obj in match_pairs:
                         break
                     break
                 elif distance > thresh_dis_near and distance < thresh_dis_far:
-                    print '\t\t\t\t FORWARD MID'
+                    print('\t\t\t\t FORWARD MID')
                     move_forward(150)
                 elif distance > thresh_dis_far:
-                    print '\t\t\t\t MOVING:'+str(distance)
+                    print('\t\t\t\t MOVING:'+str(distance))
                     move(distance)
 
 cv2.waitKey(1000)
@@ -1122,5 +1122,5 @@ comm.send_data('O')
 cv2.waitKey(7000)
 comm.send_data('C')
 cv2.waitKey(100)
-print 'cmd_count: ' + str(cmd_count)
+print('cmd_count: ' + str(cmd_count))
 
